@@ -45,19 +45,23 @@ The model inherits from `ActiveRecord::Base` while the migration inherits from `
 
 To start, the class names in the migration files must match their file names. For instance, a class in the migration file called `20141013204115_create_candies.rb` must be named `CreateCandies` while a class in a migration file called `20130915204319_add_addresses_to_houses.rb` must be called AddAddressesToHouses. 
 
-You might notice that in both the examples above, the numbers at the front of the file name were ignored. These numbers are in the form `YYYYMMDDHHMMSS`. Later on, these timestamps will become important as Rails uses them to determine which migration should be run and in what order. For instance, if you made a table called `dog_walkers` and then added a column to it called `rating`, that would be fine as the timestamp on the table creation would be before adding a column to it. However, if you did this in reverse order, that is adding a column to a table that doesn't exist then creating the table, you would get an error.
+You might notice that in both the examples above, the numbers at the front of the file name were ignored. These numbers are in the form `YYYYMMDDHHMMSS`. These timestamps will become important as ActiveRecord uses them to determine which migration should be run and in what order. For instance, if you made a table called `dog_walkers` and then added a column to it called `rating`, that would be fine as the timestamp on the table creation would be before adding a column to it. However, if you did this in reverse order, that is adding a column to a table that doesn't exist then creating the table, you would get an error.
 
-Migrations, as it was mentioned before, inherit from ActiveRecord::Migration and usually have a method called `change`. In change, you can create a table with the [create_table](http://guides.rubyonrails.org/migrations.html#creating-a-table) method. This method automatically will create a primary key column called `id`, but this default can be overridden if you'd like to customize it.
+Migrations, as it was mentioned before, inherit from ActiveRecord::Migration and have a method called `up` and a method called `down`. In `up`, you can create a table with the [create_table](http://guides.rubyonrails.org/migrations.html#creating-a-table) method. This method automatically will create a primary key column called `id`, but this default can be overridden if you'd like to customize it. Our `down` method is the reverse of `up` - it's what ActiveRecord will use to undo our migrations if needed. 
 
-Here's a simple example of the `create_table` method in action:
+Here's a simple example of the `create_table` and `drop_table` methods in action:
 
 ```ruby
 class CreateDogs < ActiveRecord::Migration
-  def change
+  def up
     create_table :dogs do |t|
       t.string :name
       t.string :breed
     end
+  end
+
+  def down
+    drop_table :dogs
   end
 end
 ```
@@ -110,17 +114,18 @@ For instance, let's say you wanted to make a class called `Candy`. Candies shoul
 
 ```ruby
 class CreateCandies < ActiveRecord::Migration
-  def change
+  def up
     create_table :products do |t|
       t.string :name
       t.integer :calories
-      t.timestamps
     end
+  end
+
+  def down
+    drop_table :products
   end
 end
 ```
-
-Note: You might be wondering what `t.timestamps` is doing here. Well, it creates two new columns, `created_at` and `updated_at`. These are handy columns to have around as sometimes you want to query based on the time of creation or update-tion instead of querying using attributes or ids. To read more about timestamps, go to ActiveRecord's [docs on them](http://api.rubyonrails.org/classes/ActiveRecord/Timestamp.html).
 
 While the migration was plural, the model would be singular:
 
