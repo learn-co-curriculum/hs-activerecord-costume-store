@@ -20,26 +20,16 @@ The `costumes` table will have four columns:
   1. name
   2. price
   3. size
-  4. image url
 
 The `costume_stores` table will have seven columns:
   1. name
   2. location
   3. number of costumes, or "costume inventory"
-  4. number of employees
-  5. whether or not it's still in business
-  6. opening time
-  7. closing time
 
 The `haunted_houses` table will have eight columns:
   1. name
   2. location
   3. theme
-  4. price
-  5. whether they're family friendly or not
-  6. opening date
-  7. closing date
-  8. long description
 
 Before coding out the creation of these tables, read about ActiveRecord below:
 
